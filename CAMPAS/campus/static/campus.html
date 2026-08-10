@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Campus · LOCQO</title>
+  <meta name="description" content="Free rooms, notices and events, and lost and found at K.R. Mangalam University.">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171e" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z' fill='%2317202b'/%3E%3Ccircle cx='12' cy='9' r='2.6' fill='%23c8a24a'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <a class="skip" href="#panes">Skip to campus information</a>
+
+  <header class="appbar">
+    <h1 class="brand">
+      <svg class="pin" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"
+              fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="9" r="2.4" fill="var(--gold)"/>
+      </svg>
+      <span class="wordmark" translate="no">LOC<span class="q">Q</span>O</span>
+      <span class="brand-sub">Campus</span>
+    </h1>
+    <div class="userbar">
+      <span id="who" class="whochip"></span>
+      <a class="linkbtn" href="/">Navigator</a>
+      <a id="adminlink" class="linkbtn" href="/admin" hidden>Admin</a>
+      <button type="button" id="logout" class="linkbtn">Log out</button>
+    </div>
+  </header>
+
+  <main class="wide">
+    <div class="tabs" role="tablist" aria-label="Campus sections">
+      <button type="button" class="tab is-on" data-tab="rooms" role="tab" aria-selected="true">Free rooms</button>
+      <button type="button" class="tab" data-tab="notices" role="tab" aria-selected="false">Notices &amp; events</button>
+      <button type="button" class="tab" data-tab="lost" role="tab" aria-selected="false">Lost &amp; found</button>
+    </div>
+
+    <div id="panes">
+      <!-- FREE ROOMS -->
+      <section id="pane-rooms" class="tabpane panel">
+        <div class="pane-head">
+          <h2 class="pane-h">Which rooms are free</h2>
+          <form id="when-form" class="when">
+            <label class="field"><span class="field-label">Day</span>
+              <select id="when-day"></select></label>
+            <label class="field"><span class="field-label">Time</span>
+              <input id="when-time" type="time" step="300"></label>
+            <button type="button" id="when-now" class="linkbtn">Now</button>
+          </form>
+        </div>
+        <p id="rooms-caption" class="muted-line"></p>
+        <!-- holds group headings + their own .cards grids, so it must not be a grid itself -->
+        <div id="rooms-list"></div>
+      </section>
+
+      <!-- NOTICES & EVENTS -->
+      <section id="pane-notices" class="tabpane panel" hidden>
+        <h2 class="pane-h">Upcoming events</h2>
+        <div id="events-list" class="cards"></div>
+        <h2 class="pane-h">Notices</h2>
+        <div id="notices-list" class="cards"></div>
+      </section>
+
+      <!-- LOST & FOUND -->
+      <section id="pane-lost" class="tabpane panel" hidden>
+        <h2 class="pane-h">Report an item</h2>
+        <form id="lost-form" class="admin-form" novalidate>
+          <label class="field"><span class="field-label">I…</span>
+            <select id="lf-kind">
+              <option value="lost">lost something</option>
+              <option value="found">found something</option>
+            </select></label>
+          <label class="field"><span class="field-label">Item</span>
+            <input id="lf-title" required placeholder="Black water bottle" maxlength="80"></label>
+          <label class="field"><span class="field-label">Where</span>
+            <select id="lf-place"></select></label>
+          <label class="field"><span class="field-label">Contact (optional)</span>
+            <input id="lf-contact" maxlength="80" placeholder="How should someone reach you?"></label>
+          <label class="field wide-field"><span class="field-label">Details (optional)</span>
+            <input id="lf-details" maxlength="400" placeholder="Any detail that proves it's theirs"></label>
+          <div class="form-actions">
+            <button type="submit" class="go">Post item</button>
+            <span class="hint">An admin checks posts before they appear.</span>
+          </div>
+        </form>
+        <h2 class="pane-h">Items</h2>
+        <div id="lost-list" class="cards"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/ui.js"></script>
+  <script src="/campus.js"></script>
+  <script src="/sos.js"></script>
+</body>
+</html>

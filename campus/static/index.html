@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>LOCQO · KR Mangalam Campus Navigator</title>
+  <meta name="description" content="Find your way around K.R. Mangalam University. Pick where you are and where you’re going for step-by-step campus directions.">
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171e" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z' fill='%2317202b'/%3E%3Ccircle cx='12' cy='9' r='2.6' fill='%23c8a24a'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <a class="skip" href="#nav-form">Skip to directions</a>
+
+  <header class="appbar">
+    <h1 class="brand">
+      <svg class="pin" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"
+              fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="9" r="2.4" fill="var(--gold)"/>
+      </svg>
+      <span class="wordmark" translate="no">LOC<span class="q">Q</span>O</span>
+    </h1>
+    <div class="userbar">
+      <span id="who" class="whochip"></span>
+      <a class="linkbtn" href="/campus">Campus</a>
+      <a id="adminlink" class="linkbtn" href="/admin" hidden>Admin</a>
+      <button type="button" id="logout" class="linkbtn">Log out</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="notices" class="notices" aria-label="Campus announcements" hidden></div>
+
+    <form id="nav-form" class="panel" novalidate aria-labelledby="form-h">
+      <h2 id="form-h" class="sr-only">Plan your route</h2>
+      <div class="fields">
+        <label class="field">
+          <span class="field-label">I’m at</span>
+          <input id="from" name="from" list="locs" enterkeyhint="search"
+                 autocomplete="off" spellcheck="false" autocapitalize="none"
+                 placeholder="e.g. Main Gate…" required>
+        </label>
+
+        <button type="button" id="swap" class="swap" aria-label="Swap start and destination">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
+            <path d="M7 4v13M7 4L4 7M7 4l3 3M17 20V7M17 20l3-3M17 20l-3-3"
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <label class="field">
+          <span class="field-label">I want to go to</span>
+          <input id="to" name="to" list="locs" enterkeyhint="go"
+                 autocomplete="off" spellcheck="false" autocapitalize="none"
+                 placeholder="e.g. Lab 15 (B202)…" required>
+        </label>
+      </div>
+
+      <datalist id="locs"></datalist>
+      <button type="submit" class="go">Get Directions</button>
+      <p id="msg" class="msg" role="status" aria-live="polite"></p>
+
+      <div class="quick" aria-label="Quick destinations">
+        <span class="quick-label">Popular</span>
+        <button type="button" data-name="Central Library">Library</button>
+        <button type="button" data-name="Canteen">Canteen</button>
+        <button type="button" data-name="Block A">Block A</button>
+        <button type="button" data-name="Football Ground">Football Ground</button>
+      </div>
+    </form>
+
+    <section class="hero">
+      <div class="map-wrap"><svg id="map" role="img" aria-label="Schematic campus map of K.R. Mangalam University"></svg></div>
+      <p id="map-cap" class="map-cap">Enter a start and destination to draw the route.</p>
+    </section>
+
+    <section id="result" class="result" aria-live="polite" aria-labelledby="result-h" hidden>
+      <h2 id="result-h" class="sr-only">Directions</h2>
+      <div class="summary">
+        <div class="summary-top">
+          <p class="route-ends"><b id="r-from"></b> <span class="arrow" aria-hidden="true">→</span> <b id="r-to"></b></p>
+          <button type="button" id="reverse" class="reverse" aria-label="Reverse this route">
+            <svg viewBox="0 0 24 24" aria-hidden="true" width="15" height="15"><path d="M17 4v13M17 4l-3 3M17 4l3 3M7 20V7M7 20l-3-3M7 20l3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Reverse
+          </button>
+        </div>
+        <p class="est">
+          <span class="chip" id="r-dist"></span>
+          <span class="chip" id="r-time"></span>
+          <span class="chip" id="r-steps"></span>
+        </p>
+      </div>
+      <aside id="floors" class="floors" hidden></aside>
+      <ol id="steps" class="steps"></ol>
+    </section>
+
+    <p class="foot">K.R. Mangalam University, Gurugram · schematic map, not to scale</p>
+  </main>
+
+  <script src="/app.js"></script>
+  <script src="/sos.js"></script>
+</body>
+</html>

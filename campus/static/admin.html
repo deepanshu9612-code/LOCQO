@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Admin console · LOCQO</title>
+  <meta name="theme-color" content="#eceef1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171e" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z' fill='%2317202b'/%3E%3Ccircle cx='12' cy='9' r='2.6' fill='%23c8a24a'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="appbar">
+    <h1 class="brand">
+      <svg class="pin" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"
+              fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="12" cy="9" r="2.4" fill="var(--gold)"/>
+      </svg>
+      <span class="wordmark" translate="no">LOC<span class="q">Q</span>O</span>
+      <span class="brand-sub">Admin</span>
+    </h1>
+    <div class="userbar">
+      <span id="who" class="whochip"></span>
+      <a class="linkbtn" href="/">Navigator</a>
+      <button type="button" id="logout" class="linkbtn">Log out</button>
+    </div>
+  </header>
+
+  <main class="wide">
+    <div class="tabs" role="tablist" aria-label="Admin sections">
+      <button type="button" class="tab is-on" data-tab="locations" role="tab" aria-selected="true">Locations</button>
+      <button type="button" class="tab" data-tab="paths" role="tab" aria-selected="false">Paths</button>
+      <button type="button" class="tab" data-tab="users" role="tab" aria-selected="false">Users</button>
+      <button type="button" class="tab" data-tab="timetable" role="tab" aria-selected="false">Timetable</button>
+      <button type="button" class="tab" data-tab="notices" role="tab" aria-selected="false">Notices &amp; events</button>
+      <button type="button" class="tab" data-tab="lost" role="tab" aria-selected="false">Lost &amp; found <span id="lost-badge" class="badge" hidden></span></button>
+      <button type="button" class="tab" data-tab="sos" role="tab" aria-selected="false">SOS <span id="sos-badge" class="badge badge-alert" hidden></span></button>
+      <button type="button" class="tab" data-tab="stats" role="tab" aria-selected="false">Analytics</button>
+    </div>
+
+    <!-- LOCATIONS -->
+    <section id="pane-locations" class="tabpane panel">
+      <h2 class="pane-h">Add a location</h2>
+      <form id="loc-form" class="admin-form" novalidate>
+        <label class="field"><span class="field-label">Id</span>
+          <input id="loc-id" required placeholder="new-lab-1" autocapitalize="none" spellcheck="false">
+          <span class="hint">lowercase · permanent</span></label>
+        <label class="field"><span class="field-label">Name</span>
+          <input id="loc-name" required placeholder="Robotics Lab"></label>
+        <label class="field"><span class="field-label">Type</span>
+          <select id="loc-type">
+            <option>lab</option><option>block</option><option>gate</option><option>eatery</option>
+            <option>ground</option><option>hostel</option><option>parking</option><option>amenity</option>
+            <option>utility</option><option>library</option><option>corridor</option>
+            <option>junction</option><option>stairs</option>
+          </select></label>
+        <label class="field"><span class="field-label">Level</span>
+          <input id="loc-level" value="outdoor" placeholder="outdoor or B-2">
+          <span class="hint">block &amp; floor come from this</span></label>
+        <label class="field"><span class="field-label">Room</span>
+          <input id="loc-room" placeholder="B202"></label>
+        <label class="field"><span class="field-label">Tour scene</span>
+          <input id="loc-scene" placeholder="9937" inputmode="numeric"></label>
+        <label class="field"><span class="field-label">X</span>
+          <input id="loc-x" type="number" step="0.5" min="0" max="200" value="50" required></label>
+        <label class="field"><span class="field-label">Y</span>
+          <input id="loc-y" type="number" step="0.5" min="0" max="200" value="50" required></label>
+        <label class="field wide-field"><span class="field-label">Aliases</span>
+          <input id="loc-aliases" placeholder="robotics, rob lab"></label>
+        <div class="form-actions">
+          <button type="submit" class="go" id="loc-submit">Add location</button>
+          <button type="button" class="linkbtn" id="loc-reset" hidden>Cancel edit</button>
+        </div>
+      </form>
+      <h2 class="pane-h">All locations <span id="loc-count" class="count"></span></h2>
+      <div class="scroller"><div id="loc-table"></div></div>
+    </section>
+
+    <!-- PATHS -->
+    <section id="pane-paths" class="tabpane panel" hidden>
+      <h2 class="pane-h">Add a path</h2>
+      <form id="edge-form" class="admin-form" novalidate>
+        <label class="field"><span class="field-label">From</span>
+          <select id="edge-a" required></select></label>
+        <label class="field"><span class="field-label">To</span>
+          <select id="edge-b" required></select></label>
+        <label class="field"><span class="field-label">Type</span>
+          <select id="edge-kind">
+            <option>walk</option><option>door</option><option>stairs</option><option>lift</option>
+          </select></label>
+        <label class="field"><span class="field-label">Weight</span>
+          <input id="edge-weight" type="number" step="0.5" min="0.1" max="1000">
+          <span class="hint">blank = auto from distance</span></label>
+        <div class="form-actions"><button type="submit" class="go">Add path</button></div>
+      </form>
+      <h2 class="pane-h">All paths <span id="edge-count" class="count"></span></h2>
+      <div class="scroller"><div id="edge-table"></div></div>
+    </section>
+
+    <!-- USERS -->
+    <section id="pane-users" class="tabpane panel" hidden>
+      <h2 class="pane-h">Add a user</h2>
+      <form id="user-form" class="admin-form" novalidate>
+        <label class="field"><span class="field-label">Username</span>
+          <input id="u-user" required autocapitalize="none" spellcheck="false"></label>
+        <label class="field"><span class="field-label">Name</span>
+          <input id="u-name" required></label>
+        <label class="field"><span class="field-label">Password</span>
+          <input id="u-pass" type="password" required minlength="8" autocomplete="new-password"></label>
+        <label class="field"><span class="field-label">Role</span>
+          <select id="u-role"><option>student</option><option>admin</option></select></label>
+        <div class="form-actions"><button type="submit" class="go">Add user</button></div>
+      </form>
+      <h2 class="pane-h">All users <span id="user-count" class="count"></span></h2>
+      <div class="scroller"><div id="user-table"></div></div>
+    </section>
+
+    <!-- TIMETABLE -->
+    <section id="pane-timetable" class="tabpane panel" hidden>
+      <h2 class="pane-h">Add a class slot</h2>
+      <p class="hint">This is what the empty-classroom finder reads. A room with no slot
+        covering the current time shows as free.</p>
+      <form id="slot-form" class="admin-form" novalidate>
+        <label class="field"><span class="field-label">Room</span>
+          <select id="slot-room" required></select></label>
+        <label class="field"><span class="field-label">Day</span>
+          <select id="slot-day"></select></label>
+        <label class="field"><span class="field-label">Starts</span>
+          <input id="slot-start" type="time" step="300" value="09:00" required></label>
+        <label class="field"><span class="field-label">Ends</span>
+          <input id="slot-end" type="time" step="300" value="10:00" required></label>
+        <label class="field wide-field"><span class="field-label">What's on</span>
+          <input id="slot-title" required maxlength="80" placeholder="DBMS Lecture"></label>
+        <div class="form-actions"><button type="submit" class="go">Add slot</button></div>
+      </form>
+      <h2 class="pane-h">Weekly timetable <span id="slot-count" class="count"></span></h2>
+      <div class="scroller"><div id="slot-table"></div></div>
+    </section>
+
+    <!-- NOTICES & EVENTS -->
+    <section id="pane-notices" class="tabpane panel" hidden>
+      <h2 class="pane-h">Post a notice or event</h2>
+      <form id="notice-form" class="admin-form" novalidate>
+        <label class="field wide-field"><span class="field-label">Message</span>
+          <textarea id="notice-body" rows="3" maxlength="300" required
+                    placeholder="Block B lift is out of service until Friday."></textarea></label>
+        <label class="field"><span class="field-label">Date &amp; time (optional)</span>
+          <input id="notice-when" type="datetime-local">
+          <span class="hint">Leave blank for a standing notice</span></label>
+        <label class="field"><span class="field-label">Venue (optional)</span>
+          <select id="notice-venue"></select></label>
+        <div class="form-actions"><button type="submit" class="go">Post</button></div>
+      </form>
+      <h2 class="pane-h">Posted</h2>
+      <div class="scroller"><div id="notice-table"></div></div>
+    </section>
+
+    <!-- LOST & FOUND MODERATION -->
+    <section id="pane-lost" class="tabpane panel" hidden>
+      <h2 class="pane-h">Reported items</h2>
+      <p class="hint">Students' posts stay hidden until you approve them.</p>
+      <div class="scroller"><div id="lost-table"></div></div>
+    </section>
+
+    <!-- SOS -->
+    <section id="pane-sos" class="tabpane panel" hidden>
+      <h2 class="pane-h">Emergency alerts</h2>
+      <p class="hint">Raised inside this app only — no emergency service was contacted.
+        Open alerts are listed first.</p>
+      <div class="scroller"><div id="sos-table"></div></div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section id="pane-stats" class="tabpane panel" hidden>
+      <div id="stat-tiles" class="tiles"></div>
+      <div class="two-col">
+        <div><h2 class="pane-h">Most-visited destinations</h2><div id="stat-to"></div></div>
+        <div><h2 class="pane-h">Most common starting points</h2><div id="stat-from"></div></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/ui.js"></script>
+  <script src="/admin.js"></script>
+</body>
+</html>

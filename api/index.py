@@ -24,4 +24,12 @@ os.environ.setdefault("SECURE_COOKIES", "1")   # ...as is auth.SECURE_COOKIE; Ve
 if not os.path.exists(DB):
     shutil.copyfile(os.path.join(ROOT, "campus.db"), DB)
 
-from app import Handler as handler  # noqa: E402
+from app import Handler  # noqa: E402
+
+
+# Vercel schedules a Python function only if its AST analyser finds a top-level `app`,
+# `application` or `handler` here — and for `handler` it looks for a real class
+# statement, not an aliased import (`... import Handler as handler` is NOT detected,
+# which silently produced no function at all and 404'd every path).
+class handler(Handler):
+    pass
